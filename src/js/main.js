@@ -1,15 +1,21 @@
 
 $(document).ready(function(){
+
+	// Inital rendering of the data, based on preselected question
 	var params = [];
 	params.question = $('#question').find(":selected").val();
 	params.compare = "None"
 	params.filter = "None"
 	loadData();
 
+
+	// Make sure the plot redraws when changes are made within the table-output view
 	$('#plot-tab').on('click', function(e) {
 		loadData();
 	});
 
+
+	// Redraw data based on new selection
 	$('select').on('change', function(e) {
 		params.question = $('#question').find(":selected").val();
 		params.compare = $('#compare').find(":selected").text();
@@ -28,8 +34,9 @@ $(document).ready(function(){
 		loadData();
 	});
 	
-
+	// Main data loading and parsing
 	function loadData() {
+		// Show dots while data is crunched
 		$('#dots').show();
 		var surveyData = [];
 		d3.csv("assets/data/"+params.question+".csv", function(d,i,columns) {
@@ -39,6 +46,8 @@ $(document).ready(function(){
 
 			// special scenario for q12
 			if (params.question == "q12") {
+
+				// check if any filtering is applied
 				if (params.filter != "None" && params.filterOption != undefined) {
 					if (params.filter == "Users") {
 						params.filterName = "Facebook Users and Non-users";
@@ -47,8 +56,11 @@ $(document).ready(function(){
 					filteredData.columns = data.columns;
 					data = filteredData;
 				}
+
+				// check if any compare filter is selected
 				if (params.compare == "None") {
 
+					// aggregate data
 					var nestedData = d3.nest()
 						.key(function(d) {return d["Question"];})
 						.key(function(d) {return d["Answer"];})
@@ -56,6 +68,8 @@ $(document).ready(function(){
 						.rollup(function(v) {return d3.sum(v,function(d) {return d.Total})})
 						.entries(data)
 					surveyData.columns = [];
+
+					// construct the data array to pass along to the chart
 					for(var i=0;i<nestedData.length;i++) {
 						surveyData[i] = {};
 						surveyData[i].Answer=nestedData[i].key;
@@ -63,11 +77,14 @@ $(document).ready(function(){
 						surveyData.columns.push(nestedData[i].key);
 					}
 					surveyData.type="single";
+
+					// draw the plot and add the table output
 					drawPlot(surveyData);
 					appendTable(surveyData); 
 
 				} else if (params.compare != "None") {
 
+					// aggregate data including the compare filter selection
 					var nestedData = d3.nest()
 						.key(function(d) {return d["Question"];})
 						.key(function(d) { return d["Answer"];})
@@ -76,6 +93,7 @@ $(document).ready(function(){
 						.rollup(function(v) { return d3.sum(v,function(d) {return d.Total});})
 						.entries(data);
 
+					// construct the data array to pass along to the chart
 					for(var i=0;i<nestedData.length;i++) {
 						surveyData[i] = {};
 						surveyData[i]["Answer"]=nestedData[i].key;
@@ -84,11 +102,12 @@ $(document).ready(function(){
 						}
 					} 
 
-					//add columns
+					
 					surveyData.columns = Object.keys(surveyData[0]);
 					surveyData.columns.splice(0, 1);
 					surveyData.type="grouped";
 					
+					// draw the plot and add the table output
 					drawPlot(surveyData);
 					appendTable(surveyData);
 
@@ -97,6 +116,8 @@ $(document).ready(function(){
 			} else {
 
 				if (params.compare == "None") {
+
+					// check if any filtering is applied
 					if (params.filter != "None" && params.filterOption != undefined) {
 						if (params.filter == "Users") {
 							params.filterName = "Facebook Users and Non-users";
@@ -106,12 +127,13 @@ $(document).ready(function(){
 						data = filteredData;
 					}
 
+					// prepopulate the final array
 					var answerKeys = data.columns.slice(6);
 						for(var i=0;i<answerKeys.length;i++) {
 							surveyData[answerKeys[i]] = 0;
 						};
 
-
+					// aggregate data including the compare filter selection
 					var nestedData = d3.nest()
 						.key(function(d) { return d["Answer"];})
 						.rollup(function(v) { return d3.sum(v,function(d) {return d.Total});})
@@ -122,9 +144,8 @@ $(document).ready(function(){
 						total += d.value;
 					});
 
+					// populate the final array
 					surveyData.columns = [];
-					surveyData.answers = [];
-					surveyData.values = [];
 					for(var i=0;i<nestedData.length;i++) {
 						surveyData[i] = {};
 						surveyData[i].Answer = nestedData[i].key;
@@ -133,10 +154,13 @@ $(document).ready(function(){
 					};
 					surveyData.type="single";
 
+					// draw chart and append data table
 					drawPlot(surveyData);
 					appendTable(surveyData);
 
 				} else if (params.compare != "None") {
+
+					// check if any filtering is applied
 					if (params.filter != "None" && params.filterOption != undefined) {
 						if (params.filter == "Users") {
 							params.filterName = "Facebook Users and Non-users";
@@ -147,14 +171,17 @@ $(document).ready(function(){
 
 					}
 
+					// identify answer keys for the question
 					var answerKeys = data.columns.slice(6);
 
+					// calculate totals to be used in the calculation for the final array
 					var totalCounts = d3.nest()
 						.key(function(d) { return d[params.compare];})
 						.sortKeys(d3.ascending)
 						.rollup(function(v) { return d3.sum(v, function(d) {return d.Total});})
 						.entries(data);
 
+					// aggregate data
 					var nestedData = d3.nest()
 						.key(function(d) { return d["Answer"];})
 						.key(function(d) { return d[params.compare];})
@@ -162,6 +189,7 @@ $(document).ready(function(){
 						.rollup(function(v) { return d3.sum(v,function(d) {return d.Total});})
 						.entries(data);
 
+					// populate the final array to pass along to the chart
 					for(var i=0;i<nestedData.length;i++) {
 						surveyData[i] = {};
 						surveyData[i]["Answer"]=nestedData[i].key;
@@ -175,6 +203,7 @@ $(document).ready(function(){
 					surveyData.columns.splice(0, 1);
 					surveyData.type="grouped";
 
+					// draw chart and append data table
 					drawPlot(surveyData);
 					appendTable(surveyData);
 
@@ -188,6 +217,8 @@ $(document).ready(function(){
 
 	function drawPlot(data) {
 		$('#dots').hide();
+
+		// set dimensions
 		var margin = {top: 20, right: 30, bottom: 30, left: 50};
 		var width = $("#plot-output").width() -margin.right - margin.left-60;
 		var chartMargin = 0;
@@ -198,12 +229,16 @@ $(document).ready(function(){
 		}
 		var height = $("#plot-output").height() - margin.top - margin.bottom - chartMargin;
 		$("svg").remove().fadeOut();
+
+		// create initial elements (svg, g)
 		var svg = d3.select("#plot-output")
 			.append("svg")
 			.attr("width",width+60)
 			.attr("height",height+chartMargin)
 			g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+
+		// define scales
 		var x0 = d3.scaleBand()
 		    .rangeRound([0, width])
 		    .paddingInner(0.1);
@@ -216,27 +251,30 @@ $(document).ready(function(){
 		var z = d3.scaleOrdinal()
 		    .range(["#F8766D", "#CD9600", "#7CAE00", "#6CCB9F", "#4DACAE", "#00BFC4", "#C77CFF", "#6392FF", "#FF61CC"]);
 
-		var keys = data.columns;;
 
 		var x1 = d3.scaleBand()
 	    	.padding(0.05);	
 
+	    // read in column keys for parsing in the chart
+	    var keys = data.columns;
+
+	    // number format to be used for rendering percentages in tooltip
 	    var f = d3.format(",.2%");
 
-	    x1.domain(keys).rangeRound([0, x0.bandwidth()]);
-
-	    // Define the div for the tooltip
+	    // define the div for the tooltip
 		var div = d3.select("body").append("div")	
     		.attr("class", "tooltip")				
     		.style("opacity", 0);
 
-		
+    	x1.domain(keys).rangeRound([0, x0.bandwidth()]);
 
-
+    	// check what type of graph we are drawing
 		if (data.type == "grouped") {
 
+			// define y domain 
 			y.domain([0, d3.max(data, function(d) { return d3.max(keys, function(key) { return d[key]; }); })]).nice();
 
+			// add y axis
 			g.append("g")
 	      	.attr("class", "axis")
 	      	.call(d3.axisLeft(y).ticks(5, "%").tickSize(-width))
@@ -249,6 +287,7 @@ $(document).ready(function(){
 		      .attr("text-anchor", "start")
 		      .text("Share of total (in %)");
 
+		    // append data with tooltips
 		    g.append("g")
 			    .selectAll("g")
 			    .data(data)
@@ -275,6 +314,8 @@ $(document).ready(function(){
 		                	.duration(500)		
 		                	.style("opacity", 0);	
 		        	});
+
+		    // render legend (if there are more than 4 elements, let's make it multiple lines)
 			if (keys.length > 4) { 
 				var legend = g.append("g")
 		      	.attr("font-family", "sans-serif")
@@ -314,8 +355,10 @@ $(document).ready(function(){
 
 		} else {
 
+			// define y domain
 			y.domain([0, d3.max(data, function(d) { return d3.max(keys, function(key) { return d.Value; }); })]).nice();
 
+			// append y axis
 			g.append("g")
 	      	.attr("class", "axis")
 	      	.call(d3.axisLeft(y).ticks(5, "%").tickSize(-width))
@@ -328,6 +371,7 @@ $(document).ready(function(){
 		      .attr("text-anchor", "start")
 		      .text("Share of total (in %)")
 
+		    // append data with tooltips
 			g.selectAll("rect")
 			    .data(data)
 			    .enter().append("rect")
@@ -351,6 +395,7 @@ $(document).ready(function(){
 		        	});
 		}
 
+		// add x axis
 		g.append("g")
 	      	.attr("class", "axis")
 	      	.attr("transform", "translate(0," + (height) + ")")
@@ -363,12 +408,17 @@ $(document).ready(function(){
 
 	}
 
-
+	// Function to add data to the table-output tab
 	function appendTable(data) {
+		// remove existing tables
 		$("table").remove();
+
+		// check if the data is aggregated
 		if (data.type == "grouped") {
 			
 			var columns = data.columns;
+
+			// format data correctly
 			var f = d3.format(",.2%");
 			data.forEach(function(d) {
 				columns.forEach(function(c) {
@@ -380,11 +430,14 @@ $(document).ready(function(){
 		} else {
 
 			var columns = ['Answer','Value'];
+
+			// format data correctly
 			var f = d3.format(",.2%");
 			data.forEach(function(d) {
 				d.Value=f(d.Value);
 			})
 		}
+			// create table
 			var table = d3.select('#table-output').append('table');
 			var thead = table.append('thead');
 			var	tbody = table.append('tbody');
@@ -440,12 +493,6 @@ $(document).ready(function(){
 	    }
 	  })
 	}
-
-	function type(d) {
-	  d.value = +d.value;
-	  return d;
-	}
-
 
 });	
 
