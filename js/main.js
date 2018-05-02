@@ -9,6 +9,12 @@ $(document).ready(function(){
 	loadData();
 
 
+	// virtual pageviews
+	$('.sidebar-menu a').on('click',function(e) {
+		var page = $(this).attr("href").replace('#','');
+		ga('send', 'pageview', "/"+page);
+	})
+
 	// Redraw data based on new selection
 	$('select').on('change', function(e) {
 		params.question = $('#question').find(":selected").val();
@@ -26,6 +32,11 @@ $(document).ready(function(){
 			params.filterOption = $('.active-filter').find(":selected").val();
 		}
 		loadData();
+
+		// record analytics events
+		var eventCategory = $(this).attr("id");
+		var eventLabel = $(this).find(":selected").text();
+		ga('send', 'event', eventCategory, "Filter Changed", eventLabel);
 	});
 	
 	// Main data loading and parsing
