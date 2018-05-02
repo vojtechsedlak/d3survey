@@ -77,10 +77,7 @@ div.tooltip {
   padding: 20px;
   text-align: center; }
   #share-buttons div {
-    width: 50px;
-    height: 50px;
-    margin: auto;
-    float: left; }
+    display: inline; }
 
 #table-output {
   width: 100%;
