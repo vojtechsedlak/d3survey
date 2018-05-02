@@ -9,12 +9,6 @@ $(document).ready(function(){
 	loadData();
 
 
-	// Make sure the plot redraws when changes are made within the table-output view
-	$('#plot-tab').on('click', function(e) {
-		loadData();
-	});
-
-
 	// Redraw data based on new selection
 	$('select').on('change', function(e) {
 		params.question = $('#question').find(":selected").val();
@@ -181,6 +175,20 @@ $(document).ready(function(){
 						.rollup(function(v) { return d3.sum(v, function(d) {return d.Total});})
 						.entries(data);
 
+					// check if enough data exists
+					var valid = 1;
+					totalCounts.forEach(function(count) {
+						if (count.value < 50) {
+							valid = 0;
+							return;
+						}
+
+					});
+					if (valid == 0) {
+						sampleError();
+						return;
+					}
+
 					// aggregate data
 					var nestedData = d3.nest()
 						.key(function(d) { return d["Answer"];})
@@ -217,10 +225,18 @@ $(document).ready(function(){
 
 	function drawPlot(data) {
 		$('#dots').hide();
+		$('.sample-error').hide();
 
 		// set dimensions
 		var margin = {top: 20, right: 30, bottom: 30, left: 50};
-		var width = $("#plot-output").width() -margin.right - margin.left-60;
+		var width = 0;
+		var plotWidth = $("#plot-output").width() -margin.right - margin.left-60;
+		var tableWidth = $("#table-output").width() -margin.right - margin.left-60;
+		if (plotWidth < tableWidth) {
+			width = tableWidth;
+		} else {
+			width = plotWidth;
+		}
 		var chartMargin = 0;
 		if (data.type == "grouped") {
 			chartMargin = 170;
@@ -228,7 +244,7 @@ $(document).ready(function(){
 			chartMargin = 100;
 		}
 		var height = $("#plot-output").height() - margin.top - margin.bottom - chartMargin;
-		$("svg").remove().fadeOut();
+		$("svg").remove();
 
 		// create initial elements (svg, g)
 		var svg = d3.select("#plot-output")
@@ -410,8 +426,9 @@ $(document).ready(function(){
 
 	// Function to add data to the table-output tab
 	function appendTable(data) {
-		// remove existing tables
+		// remove existing tables and warnings
 		$("table").remove();
+		$('.sample-error').hide();
 
 		// check if the data is aggregated
 		if (data.type == "grouped") {
@@ -492,6 +509,16 @@ $(document).ready(function(){
 	      }
 	    }
 	  })
+	}
+
+	function sampleError() {
+		$('#dots').hide();
+		$('.sample-error').hide();
+		$('svg').remove();
+		$('table').remove();
+		$('.output').append('<div class="box box-solid box-warning sample-error"></div>');;
+		var div = $('.sample-error');
+		div.text("There isn't enough data for the filters you selected. Try changing the filtering criteria.");
 	}
 
 });	

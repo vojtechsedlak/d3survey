@@ -69,8 +69,12 @@ div.tooltip {
   text-align: center;
   padding: 100px; }
 
+.sample-error {
+  padding: 20px; }
+
 #table-output {
-  width: 100%; }
+  width: 100%;
+  height: 650px; }
   #table-output h3 {
     padding-left: 30px;
     padding-top: 30px; }
