@@ -6,8 +6,9 @@ var browserify = require('browserify');
 var del = require('del');
 var concat = require('gulp-concat');
 var runSequence = require('run-sequence');
-//var ghPages = require('gulp-gh-pages');
+var ghPages = require('gulp-gh-pages');
 var imagemin = require('gulp-imagemin');
+var rename = require('gulp-rename');
 
 var paths = {
 	sass:'src/scss/',
@@ -80,6 +81,7 @@ gulp.task('copy:adminLTE-css', () =>
 
 gulp.task('copy:adminLTE-skin', () =>
 	gulp.src(['node_modules/admin-lte/dist/css/skins/_all-skins.min.css*'])
+		.pipe(rename('all-skins.min.css'))
     	.pipe(gulp.dest(`${paths.dist}/css/vendor`))
 );
 
