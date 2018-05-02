@@ -228,6 +228,18 @@ $(document).ready(function(){
 		$('#dots').hide();
 		$('.sample-error').hide();
 
+		// sort object labels for histogram
+		if (params.question == "q2") {
+			var orderedData = [];
+			for(var i=0;i<data.length;i++) {
+				var number = parseInt(data[i].Answer);
+				orderedData[number] = data[i];
+			}
+			orderedData.columns = data.columns;
+			orderedData.type = data.type;
+			data = orderedData;
+		}
+
 		// set dimensions
 		var margin = {top: 20, right: 30, bottom: 30, left: 50};
 		var width = 0;
@@ -339,7 +351,7 @@ $(document).ready(function(){
 		      	.attr("font-size", 12)
 		      	.attr("border","2px solid #ddd")
 			    .selectAll("g")
-			    	.data(keys.slice().reverse())
+			    	.data(keys.slice())
 			    	.enter().append("g")
 			      		.attr( "transform", function(d,i) { 
 					        xOff = (i % 4) * 150
@@ -381,9 +393,10 @@ $(document).ready(function(){
 	      	.call(d3.axisLeft(y).ticks(5, "%").tickSize(-width))
 		    .append("text")
 		      .attr("x", 2)
-		      .attr("y", y(y.ticks().pop()) -5)
+		      .attr("y", y(y.ticks().pop()) +0.5)
 		      .attr("dy", "0.32em")
 		      .attr("fill", "#000")
+		      .attr("fill", "#bbb")
 		      .attr("font-weight", "bold")
 		      .attr("text-anchor", "start")
 		      .text("Share of total (in %)")
