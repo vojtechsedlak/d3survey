@@ -9,6 +9,8 @@ $(document).ready(function(){
 	loadData();
 
 
+
+
 	// Redraw data based on new selection
 	$('select').on('change', function(e) {
 		params.question = $('#question').find(":selected").val();
@@ -26,6 +28,11 @@ $(document).ready(function(){
 			params.filterOption = $('.active-filter').find(":selected").val();
 		}
 		loadData();
+
+		// record analytics events
+		var eventCategory = $(this).attr("id");
+		var eventLabel = $(this).find(":selected").text();
+		ga('send', 'event', eventCategory, "Filter Changed", eventLabel);
 	});
 	
 	// Main data loading and parsing
