@@ -5,11 +5,59 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>How do you feel about Facebook?</title>
+  <meta itemprop="name" content="We asked people how they feel about Facebook. Here's what they said.">
+  <meta itemprop="description" content="47,000 people responded to our survey asking how they feel about Facebook. The data is interesting and open for your exploration.">
+  <meta itemprop="image" content="assets/facebook_og.png">
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://fbsurvey.mozillafoundation.org" />
+  <meta property="og:image" content="assets/facebook_og.png" />
+  <meta property="og:title" content="We asked people how they feel about Facebook. Here's what they said." />
+  <meta property="og:description" content="47,000 people responded to our survey asking how they feel about Facebook. The data is interesting and open for your exploration." />
+  <meta property="og:site_name" content="How do you feel about Facebook?" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@mozilla" />
+  <meta name="twitter:title" content="We asked people how they feel about Facebook. Here's what they said." />
+  <meta name="twitter:description" content="47,000 people responded to our survey asking how they feel about Facebook. The data is interesting and open for your exploration." />
+  <meta name="twitter:image" content="assets/facebook_og.png" />
+  <meta name="twitter:url" content="https://fbsurvey.mozillafoundation.org" />
+
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="css/vendor/AdminLTE.min.css">
   <link rel="stylesheet" type="text/css" href="css/vendor/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="css/vendor/all-skins.min.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+
+  <script src="//c.shpg.org/352/sp.js"></script>
+  <!-- Google Analytics -->
+  <script>
+    (function () {
+      var _dntStatus = navigator.doNotTrack || navigator.msDoNotTrack;
+      var fxMatch = navigator.userAgent.match(/Firefox\/(\d+)/);
+      var ie10Match = navigator.userAgent.match(/MSIE 10/i);
+      var w8Match = navigator.appVersion.match(/Windows NT 6.2/);
+
+      if (fxMatch && Number(fxMatch[1]) < 32) {
+        _dntStatus = 'Unspecified';
+      } else if (ie10Match && w8Match) {
+        _dntStatus = 'Unspecified';
+      } else {
+        _dntStatus = { '0': 'Disabled', '1': 'Enabled' }[_dntStatus] || 'Unspecified';
+      }
+
+      if (_dntStatus !== 'Enabled'){
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-87658599-14', 'auto');
+        ga('send', 'pageview');
+      }
+    })();
+  </script>
+
 </head>
 <body class="hold-transition skin-black">
 <div class="wrapper">
@@ -58,6 +106,11 @@
           </li>
       </ul>
       <!-- /.sidebar-menu -->
+      <div id="share-buttons">
+          <div class='sp_187810 sp_fb_small' ></div>
+          <div class='sp_187811 sp_tw_small' ></div>
+          <div class='sp_187812 sp_em_small' ></div>
+        </div>
     </section>
     <!-- /.sidebar -->
   </aside>
@@ -209,6 +262,10 @@
 
           <p>This was not a scientific poll. This was as self-selecting survey targeted mostly at people on the Mozilla Foundation email list, the Pocket newsletter email list, through the Mozilla Twitter channel, through a Medium blog post, and through users sharing with friends and family.</p>
 
+          <div style="background:#b8edd4;padding:20px;width:80%;margin:auto;text-align:center;">
+            Enjoy this open data? Care about things like privacy, data, the Internet being awesome? <strong><a href="https://www.mozilla.org/newsletter/mozilla/?utm_source=surveygizmo&amp;utm_medium=referral&amp;utm_campaign=fbsurveytool0518" target="_blank">Sign up here</a></strong> and we'll keep you updated with the latest.
+          </div>
+          <hr>
           <h3>Survey</h3>
 
           <p>Below is the full copy of the survey, which you can also find <a href="https://www.surveygizmo.com/s3/4273732/facebook-survey">here</a>.</p>

@@ -72,6 +72,13 @@ div.tooltip {
 .sample-error {
   padding: 20px; }
 
+#share-buttons {
+  width: 100%;
+  padding: 20px;
+  text-align: center; }
+  #share-buttons div {
+    display: inline; }
+
 #table-output {
   width: 100%;
   height: 650px; }
