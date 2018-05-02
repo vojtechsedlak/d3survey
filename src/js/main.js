@@ -9,7 +9,11 @@ $(document).ready(function(){
 	loadData();
 
 
-
+	// virtual pageviews
+	$('.sidebar-menu a').on('click',function(e) {
+		var page = $(this).attr("href").replace('#','');
+		ga('send', 'pageview', "/"+page);
+	})
 
 	// Redraw data based on new selection
 	$('select').on('change', function(e) {
