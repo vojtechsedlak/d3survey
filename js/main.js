@@ -32,6 +32,7 @@ $(document).ready(function(){
 	function loadData() {
 		// Show dots while data is crunched
 		$('#dots').show();
+		$("svg").remove();
 		var surveyData = [];
 		d3.csv("assets/data/"+params.question+".csv", function(d,i,columns) {
 			for (var i = 7, n = columns.length; i < n; ++i) d[columns[i]] = +d[columns[i]];
